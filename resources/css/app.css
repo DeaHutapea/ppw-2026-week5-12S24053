@@ -1,0 +1,245 @@
+:root {
+    color-scheme: light;
+    --del-forest: #183c35;
+    --del-forest-deep: #102d28;
+    --del-paper: #f4f1e8;
+    --del-card: #fffdf7;
+    --del-terracotta: #b75f43;
+    --del-terracotta-dark: #984832;
+    --del-ink: #222c27;
+    --del-muted: #77786e;
+    --del-line: #e4dfd2;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse at 88% 8%, rgb(183 95 67 / 7%), transparent 28rem),
+        var(--del-paper);
+    color: var(--del-ink);
+    font-family: "Segoe UI", sans-serif;
+}
+
+.navbar-del {
+    position: relative;
+    background: var(--del-forest);
+}
+
+.navbar-del::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: var(--del-terracotta);
+    content: "";
+}
+
+.navbar-del .navbar-brand,
+.navbar-del .nav-link {
+    color: #fffdf7;
+}
+
+.navbar-del .nav-link {
+    position: relative;
+    opacity: .78;
+}
+
+.navbar-del .nav-link:hover,
+.navbar-del .nav-link.active {
+    opacity: 1;
+}
+
+.navbar-del .nav-link.active::after {
+    position: absolute;
+    right: .5rem;
+    bottom: .1rem;
+    left: .5rem;
+    height: 2px;
+    background: #e4a184;
+    content: "";
+}
+
+.brand-mark {
+    display: inline-grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 45%);
+    border-radius: 50%;
+    color: #f0c6a9;
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.page-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--del-line);
+}
+
+.page-eyebrow {
+    margin-bottom: .45rem;
+    color: var(--del-terracotta);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+
+.page-title {
+    margin: 0;
+    color: var(--del-forest);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.8rem, 4vw, 2.65rem);
+    font-weight: 700;
+    letter-spacing: -.045em;
+}
+
+.page-description,
+.text-muted-del {
+    color: var(--del-muted);
+}
+
+.card-del {
+    overflow: hidden;
+    border: 1px solid var(--del-line);
+    border-radius: .55rem;
+    background: var(--del-card);
+    box-shadow: 0 16px 40px rgb(38 45 36 / 7%);
+}
+
+.btn-del {
+    border-color: var(--del-terracotta);
+    background: var(--del-terracotta);
+    color: #fff;
+}
+
+.btn-del:hover,
+.btn-del:focus {
+    border-color: var(--del-terracotta-dark);
+    background: var(--del-terracotta-dark);
+    color: #fff;
+}
+
+.btn-outline-del {
+    border-color: #bdc9be;
+    color: var(--del-forest);
+}
+
+.btn-outline-del:hover {
+    border-color: var(--del-forest);
+    background: #e9eee8;
+    color: var(--del-forest-deep);
+}
+
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-hover-bg: #f5f2e9;
+    color: var(--del-ink);
+}
+
+.table thead th {
+    border-bottom: 1px solid var(--del-line);
+    background: #f0ede3;
+    color: var(--del-forest);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.table > :not(caption) > * > * {
+    padding: 1rem .9rem;
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child > * {
+    border-bottom: 0;
+}
+
+.table a.text-dark {
+    color: var(--del-forest) !important;
+}
+
+.form-label {
+    color: var(--del-forest);
+    font-weight: 700;
+}
+
+.form-control,
+.form-select {
+    border-color: #d9d5c9;
+    border-radius: .4rem;
+    background-color: #fffefb;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #729184;
+    box-shadow: 0 0 0 .2rem rgb(24 60 53 / 12%);
+}
+
+.form-text {
+    color: var(--del-muted);
+}
+
+.badge-stock {
+    background: #e5ede5;
+    color: var(--del-forest);
+    font-weight: 700;
+}
+
+.pagination {
+    margin-bottom: 0;
+}
+
+.pagination .page-link {
+    color: var(--del-forest);
+}
+
+.pagination .active > .page-link {
+    border-color: var(--del-forest);
+    background: var(--del-forest);
+    color: #fff;
+}
+
+.detail-label {
+    margin-bottom: .25rem;
+    color: var(--del-terracotta);
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.detail-value {
+    color: var(--del-forest);
+    font-weight: 700;
+}
+
+.site-footer {
+    color: var(--del-muted);
+    font-size: .85rem;
+}
+
+@media (max-width: 575.98px) {
+    .page-heading {
+        align-items: start;
+    }
+
+    .page-heading > .btn,
+    .page-heading > .d-flex {
+        width: 100%;
+    }
+
+    .page-heading > .d-flex .btn {
+        flex: 1;
+    }
+}
