@@ -2,6 +2,15 @@
 
 Sistem Informasi Perpustakaan Kampus Del berbasis Laravel 11 dengan pola MVC. Aplikasi ini mengelola koleksi buku dan kategori melalui CRUD RESTful, relasi Eloquent, validasi server-side, serta tampilan Blade bertema Del Purple.
 
+## Spesifikasi Teknis Wajib (Checklist Persyaratan)
+
+- Skema Data & Migrations (Bobot: 20%): Tabel kategori (kode_kategori, nama_kategori) dan tabel buku (isbn, judul, penulis, penerbit, tahun_terbit, kategori_id foreign key, stok, sinopsis) dengan tipe data dan index yang presisi.
+- Model Eloquent & Relasi (Bobot: 20%): Relasi Kategori hasMany Buku dan Buku belongsTo Kategori. Proteksi mass assignment dengan `$fillable`, serta implementasi Eager Loading (`Buku::with('kategori')`) di semua tampilan index.
+- Routing RESTful & Resource Controller (Bobot: 20%): Mendaftarkan Route::resource untuk buku dan kategori. Mengimplementasikan 7 method CRUD lengkap dan menangani validasi server-side.
+- Validasi Form Server-Side & CSRF (Bobot: 15%): Validasi server ketat via `$request->validate()` (ISBN unik, judul minimal 5 karakter, stok minimal 0). Seluruh form wajib menyertakan `@csrf` dan method spoofing pada edit.
+- Blade Templating & Desain UI (Bobot: 15%): Menggunakan master layout `<x-layout>` bertema Del Purple (#4C1D95), pagination aktif, notifikasi flash session, dan penanganan data kosong dengan `@forelse`.
+- Seeders & Bukti Audit SQL (Bobot: 10%): Menyediakan Seeder dan Factory untuk 5 kategori dan 20 buku realistis. Audit log SQL disimpan ke `storage/logs/laravel.log` saat aplikasi berjalan di environment lokal.
+
 ## Kebutuhan
 
 - PHP 8.2 atau lebih baru dengan ekstensi PDO SQLite
