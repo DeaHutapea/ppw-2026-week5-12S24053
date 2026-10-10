@@ -1,5 +1,8 @@
 # SIPUS-Del
 
+Nama: Dea Hutapea
+NIM: 12S24053
+
 Sistem Informasi Perpustakaan Kampus Del berbasis Laravel 11 dengan pola MVC. Aplikasi ini mengelola koleksi buku dan kategori melalui CRUD RESTful, relasi Eloquent, validasi server-side, serta tampilan Blade bertema Del Purple.
 
 ## Spesifikasi Teknis Wajib (Checklist Persyaratan)
@@ -20,29 +23,35 @@ Sistem Informasi Perpustakaan Kampus Del berbasis Laravel 11 dengan pola MVC. Ap
 ## Menjalankan aplikasi
 
 1. Salin `.env.example` menjadi `.env`, lalu sesuaikan pengaturan lokal bila diperlukan. Jangan commit `.env`.
-2. Pasang dependensi dan buat kunci aplikasi:
+2. Jika database SQLite belum ada, buat file terlebih dahulu sebelum migrate:
+
+   ```powershell
+   type nul > database\database.sqlite
+   ```
+
+3. Pasang dependensi dan buat kunci aplikasi:
 
    ```bash
    composer install
    php artisan key:generate
    ```
 
-3. Siapkan skema serta data contoh:
+4. Siapkan skema serta data contoh:
 
    ```bash
    php artisan migrate:fresh --seed
    ```
 
-   Seeder membuat 5 kategori dan 20 buku contoh.
+   Seeder membuat 5 kategori dan 20 buku contoh yang dibuat dengan data realistis.
 
-4. Pasang dependensi frontend dan kompilasi aset Vite:
+5. Pasang dependensi frontend dan kompilasi aset Vite:
 
    ```bash
    npm install
    npm run build
    ```
 
-5. Jalankan server lokal:
+6. Jalankan server lokal:
 
    ```bash
    php artisan serve
@@ -59,6 +68,12 @@ Sistem Informasi Perpustakaan Kampus Del berbasis Laravel 11 dengan pola MVC. Ap
 - Seluruh form memakai CSRF, form edit memakai method spoofing, dan output Blade di-escape secara default.
 - Layout Blade `<x-layout>` dengan notifikasi flash, tampilan kosong `@forelse`, dan warna Del Purple `#4C1D95`.
 
+## Bukti audit query
+
+![Bukti eager loading](docs/bukti-audit-query.png)
+
+Catatan: hasil log di bawah ini menunjukkan query SQL dieksekusi dan membuktikan aplikasi melakukan eager loading kategori saat membuka halaman katalog.
+
 ## Pengujian
 
 Jalankan pengujian fitur:
@@ -67,7 +82,12 @@ Jalankan pengujian fitur:
 php artisan test
 ```
 
-Tes katalog mengaudit kueri yang berjalan dan memastikan hanya ada satu kueri untuk buku serta satu kueri eager load kategori. Saat aplikasi berjalan dengan `APP_ENV=local`, listener pada `AppServiceProvider` mencatat SQL dan waktu eksekusi ke `storage/logs/laravel.log`. Buka katalog dan periksa log tersebut untuk melihat bukti eager loading.
+Tes katalog mengaudit kueri yang berjalan dan memastikan hanya ada satu kueri untuk buku serta satu kueri eager load kategori. Saat aplikasi berjalan dengan `APP_ENV=local`, listener pada `AppServiceProvider` mencatat SQL dan waktu eksekusi ke `storage/logs/laravel.log`.
+
+## Catatan dependency
+
+- `laravel/boost` hadir sebagai alat bantu pengembangan lokal dan tidak menjadi bagian inti dari modul; file `boost.json` serta package `laravel/boost` tetap disimpan di repositori untuk menjaga proses pengembangan agar konsisten.
+- Sementara itu, konfigurasi `composer.json` menyetel `"advisories": { "block": false }` untuk menyesuaikan kebutuhan pengembangan lokal agar proses setup tetap berlanjut tanpa blokir oleh advisories non-kritis.
 
 ## Skema utama
 
