@@ -3,7 +3,7 @@
 Nama: Dea Hutapea
 NIM: 12S24053
 
-Sistem Informasi Perpustakaan Kampus Del berbasis Laravel 11 dengan pola MVC. Aplikasi ini mengelola koleksi buku dan kategori melalui CRUD RESTful, relasi Eloquent, validasi server-side, serta tampilan Blade bertema Del Purple.
+Sistem Informasi Perpustakaan Kampus Del berbasis Laravel 11 dengan pola MVC. Aplikasi ini mengelola koleksi buku dan kategori melalui CRUD RESTful, relasi Eloquent, validasi server-side, serta tampilan Blade bertema editorial dengan warna hijau hutan dan aksen terracotta.
 
 ## Spesifikasi Teknis Wajib (Checklist Persyaratan)
 
@@ -11,7 +11,7 @@ Sistem Informasi Perpustakaan Kampus Del berbasis Laravel 11 dengan pola MVC. Ap
 - Model Eloquent & Relasi (Bobot: 20%): Relasi Kategori hasMany Buku dan Buku belongsTo Kategori. Proteksi mass assignment dengan `$fillable`, serta implementasi Eager Loading (`Buku::with('kategori')`) di semua tampilan index.
 - Routing RESTful & Resource Controller (Bobot: 20%): Mendaftarkan Route::resource untuk buku dan kategori. Mengimplementasikan 7 method CRUD lengkap dan menangani validasi server-side.
 - Validasi Form Server-Side & CSRF (Bobot: 15%): Validasi server ketat via `$request->validate()` (ISBN unik, judul minimal 5 karakter, stok minimal 0). Seluruh form wajib menyertakan `@csrf` dan method spoofing pada edit.
-- Blade Templating & Desain UI (Bobot: 15%): Menggunakan master layout `<x-layout>` bertema Del Purple (#4C1D95), pagination aktif, notifikasi flash session, dan penanganan data kosong dengan `@forelse`.
+- Blade Templating & Desain UI (Bobot: 15%): Menggunakan master layout `<x-layout>` dengan tema hijau hutan dan aksen terracotta, pagination aktif, notifikasi flash session, dan penanganan data kosong dengan `@forelse`.
 - Seeders & Bukti Audit SQL (Bobot: 10%): Menyediakan Seeder dan Factory untuk 5 kategori dan 20 buku realistis. Audit log SQL disimpan ke `storage/logs/laravel.log` saat aplikasi berjalan di environment lokal.
 
 ## Kebutuhan
@@ -66,13 +66,13 @@ Sistem Informasi Perpustakaan Kampus Del berbasis Laravel 11 dengan pola MVC. Ap
 - Relasi `Kategori::bukus()` dan `Buku::kategori()` dengan proteksi mass assignment melalui `$fillable`.
 - Katalog menggunakan `Buku::with('kategori')` dan simple pagination untuk menghindari N+1 sekaligus membatasi kueri daftar menjadi satu kueri buku dan satu kueri kategori.
 - Seluruh form memakai CSRF, form edit memakai method spoofing, dan output Blade di-escape secara default.
-- Layout Blade `<x-layout>` dengan notifikasi flash, tampilan kosong `@forelse`, dan warna Del Purple `#4C1D95`.
+- Layout Blade `<x-layout>` dengan notifikasi flash, tampilan kosong `@forelse`, serta tema hijau hutan, warna kertas, dan aksen terracotta.
 
 ## Bukti audit query
 
-![Bukti eager loading](docs/bukti-audit-query.png)
+![Bukti audit query dari laravel.log](docs/bukti-audit-query.png)
 
-Catatan: hasil log di bawah ini menunjukkan query SQL dieksekusi dan membuktikan aplikasi melakukan eager loading kategori saat membuka halaman katalog.
+Log lokal di atas diambil setelah membuka `/buku`. Terlihat satu query `bukus` dengan `limit 11` (10 data per halaman ditambah satu data untuk memeriksa halaman berikutnya) dan satu query eager loading `kategoris` dengan `where ... in (...)`. Query `sessions` juga dapat muncul karena konfigurasi session database; query itu bukan query katalog tambahan.
 
 ## Pengujian
 
