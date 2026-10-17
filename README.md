@@ -68,7 +68,9 @@ Sistem Informasi Perpustakaan Kampus Del berbasis Laravel 11 dengan pola MVC. Ap
 - Pengelolaan buku/kategori dan transaksi peminjaman hanya dapat digunakan staff yang sudah login.
 - Login memakai `Auth::attempt`, regenerasi session setelah berhasil, menyimpan waktu login ke session, dan mengantre cookie email pustakawan dengan HttpOnly serta SameSite=Lax. Pencarian katalog terakhir juga disimpan ke session.
 - Logout menghapus session dan meregenerasi token CSRF.
-- Transaksi peminjaman dan pengembalian memperbarui stok di dalam DB transaction dengan row lock untuk mencegah stok tidak konsisten.
+- Transaksi peminjaman dan pengembalian memperbarui stok di dalam DB transaction dengan `lockForUpdate()`.
+
+  > Catatan: proyek ini memakai SQLite. SQLite tidak mendukung penguncian baris, sehingga `lockForUpdate()` tidak menghasilkan klausa `FOR UPDATE` di sana; konsistensi dijaga oleh transaksi dan kunci tulis SQLite. Penguncian baris penuh berlaku jika database dipindah ke MySQL/InnoDB, tanpa mengubah kode.
 - NIM yang sama tidak dapat memiliki dua peminjaman aktif untuk buku yang sama. Validasi stok habis membatalkan transaksi; kesalahan database dicatat ke log.
 - Status pengembalian menggunakan nilai `dikembalikan`; migration pembaruan mengonversi data lama berstatus `kembali`.
 - Riwayat peminjaman tidak dapat dihapus bersama buku terkait.
