@@ -23,7 +23,16 @@
             <div class="collapse navbar-collapse" id="mainNavigation">
                 <div class="navbar-nav ms-auto gap-lg-2">
                     <a class="nav-link {{ request()->routeIs('buku.*') ? 'active' : '' }}" href="{{ route('buku.index') }}">Koleksi Buku</a>
-                    <a class="nav-link {{ request()->routeIs('kategori.*') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
+                    @auth
+                        <a class="nav-link {{ request()->routeIs('kategori.*') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
+                        <a class="nav-link {{ request()->routeIs('peminjaman.*') ? 'active' : '' }}" href="{{ route('peminjaman.index') }}">Peminjaman</a>
+                        <form action="{{ route('logout') }}" method="POST" class="d-flex">
+                            @csrf
+                            <button type="submit" class="nav-link border-0 bg-transparent">Keluar ({{ auth()->user()->name }})</button>
+                        </form>
+                    @else
+                        <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">Login Staff</a>
+                    @endauth
                 </div>
             </div>
         </div>

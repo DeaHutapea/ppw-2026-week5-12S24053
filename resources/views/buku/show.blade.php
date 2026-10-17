@@ -7,7 +7,9 @@
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('buku.index') }}" class="btn btn-outline-del">Kembali</a>
-            <a href="{{ route('buku.edit', $buku) }}" class="btn btn-del">Ubah Buku</a>
+            @auth
+                <a href="{{ route('buku.edit', $buku) }}" class="btn btn-del">Ubah Buku</a>
+            @endauth
         </div>
     </div>
 

@@ -63,10 +63,19 @@ Sistem Informasi Perpustakaan Kampus Del berbasis Laravel 11 dengan pola MVC. Ap
 
 - CRUD buku dengan ISBN unik 13 digit, kategori, stok, sinopsis, dan validasi input server-side.
 - CRUD kategori; kategori yang masih memiliki buku tidak dapat dihapus agar data buku tetap utuh.
+- Katalog buku dapat dibuka publik dan dicari berdasarkan judul, penulis, atau ISBN melalui Query Builder Laravel dengan parameter binding.
+- Pengelolaan buku/kategori dan transaksi peminjaman hanya dapat digunakan staff yang sudah login.
+- Login memakai `Auth::attempt`, regenerasi session setelah berhasil, dan logout yang menghapus session serta token CSRF.
+- Transaksi peminjaman dan pengembalian memperbarui stok di dalam DB transaction dengan row lock untuk mencegah stok tidak konsisten.
+- Riwayat peminjaman tidak dapat dihapus bersama buku terkait.
 - Relasi `Kategori::bukus()` dan `Buku::kategori()` dengan proteksi mass assignment melalui `$fillable`.
 - Katalog menggunakan `Buku::with('kategori')` dan simple pagination untuk menghindari N+1 sekaligus membatasi kueri daftar menjadi satu kueri buku dan satu kueri kategori.
 - Seluruh form memakai CSRF, form edit memakai method spoofing, dan output Blade di-escape secara default.
 - Layout Blade `<x-layout>` dengan notifikasi flash, tampilan kosong `@forelse`, serta tema hijau hutan, warna kertas, dan aksen terracotta.
+
+### Akun staff demo
+
+Setelah menjalankan seeder, login dengan `admin@del.ac.id` dan password `password123`. Kredensial ini hanya untuk pengembangan lokal; ubah atau hapus akun demo sebelum aplikasi dipublikasikan.
 
 ## Bukti audit query
 

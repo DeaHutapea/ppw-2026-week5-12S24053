@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Buku;
 use App\Models\Kategori;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,6 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        User::factory()->create([
+            'name' => 'Admin SIPUS',
+            'email' => 'admin@del.ac.id',
+            'password' => bcrypt('password123'),
+        ]);
+
         $kategoris = collect([
             ['kode_kategori' => 'KT-001', 'nama_kategori' => 'Teknologi Informasi'],
             ['kode_kategori' => 'KT-002', 'nama_kategori' => 'Ilmu Komputer'],

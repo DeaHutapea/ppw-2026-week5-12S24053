@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Buku;
 use App\Models\Kategori;
+use App\Models\User;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,7 @@ class SipusCrudTest extends TestCase
         parent::setUp();
 
         $this->withoutVite();
+        $this->actingAs(User::factory()->create());
     }
 
     public function test_book_catalog_eager_loads_categories_in_two_queries(): void
