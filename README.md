@@ -63,25 +63,62 @@ Sistem Informasi Perpustakaan Kampus Del berbasis Laravel 11 dengan pola MVC. Ap
 
 - CRUD buku dengan ISBN unik 13 digit, kategori, stok, sinopsis, dan validasi input server-side.
 - CRUD kategori; kategori yang masih memiliki buku tidak dapat dihapus agar data buku tetap utuh.
-- Katalog buku dapat dibuka publik dan dicari berdasarkan judul, penulis, atau ISBN melalui Query Builder Laravel dengan parameter binding.
+- Katalog buku dapat dibuka publik dan dicari berdasarkan judul, penulis, ISBN, atau kategori melalui Query Builder Laravel dengan parameter binding.
+- Katalog menampilkan jumlah riwayat peminjaman per buku dan statistik total judul, stok tersedia, peminjaman aktif, serta buku yang sudah dikembalikan.
 - Pengelolaan buku/kategori dan transaksi peminjaman hanya dapat digunakan staff yang sudah login.
-- Login memakai `Auth::attempt`, regenerasi session setelah berhasil, dan logout yang menghapus session serta token CSRF.
+- Login memakai `Auth::attempt`, regenerasi session setelah berhasil, menyimpan waktu login ke session, dan mengantre cookie email pustakawan dengan HttpOnly serta SameSite=Lax. Pencarian katalog terakhir juga disimpan ke session.
+- Logout menghapus session dan meregenerasi token CSRF.
 - Transaksi peminjaman dan pengembalian memperbarui stok di dalam DB transaction dengan row lock untuk mencegah stok tidak konsisten.
+- NIM yang sama tidak dapat memiliki dua peminjaman aktif untuk buku yang sama. Validasi stok habis membatalkan transaksi; kesalahan database dicatat ke log.
+- Status pengembalian menggunakan nilai `dikembalikan`; migration pembaruan mengonversi data lama berstatus `kembali`.
 - Riwayat peminjaman tidak dapat dihapus bersama buku terkait.
 - Relasi `Kategori::bukus()` dan `Buku::kategori()` dengan proteksi mass assignment melalui `$fillable`.
-- Katalog menggunakan `Buku::with('kategori')` dan simple pagination untuk menghindari N+1 sekaligus membatasi kueri daftar menjadi satu kueri buku dan satu kueri kategori.
+- Katalog menggunakan `Buku::with('kategori')->withCount('peminjamans')` dan pagination yang mempertahankan filter/query string.
 - Seluruh form memakai CSRF, form edit memakai method spoofing, dan output Blade di-escape secara default.
 - Layout Blade `<x-layout>` dengan notifikasi flash, tampilan kosong `@forelse`, serta tema hijau hutan, warna kertas, dan aksen terracotta.
 
-### Akun staff demo
+## Fitur Week 6
 
-Setelah menjalankan seeder, login dengan `admin@del.ac.id` dan password `password123`. Kredensial ini hanya untuk pengembangan lokal; ubah atau hapus akun demo sebelum aplikasi dipublikasikan.
+### Akun pustakawan demo
+
+Setelah menjalankan seeder, login dengan `pustakawan@del.ac.id` dan password `password123`. Kredensial ini hanya untuk pengembangan lokal; ubah atau hapus akun demo sebelum aplikasi dipublikasikan.
+
+Seeder menyediakan 5 kategori, 20 buku (termasuk sampel stok 0 dan stok 1), satu peminjaman aktif, dan satu riwayat pengembalian. Katalog menyimpan kata pencarian terakhir pada session. Setelah login, periksa cookie `del_last_user_email` di Browser DevTools; cookie disetel dengan atribut HttpOnly dan SameSite=Lax.
+
+### ERD
+
+```mermaid
+erDiagram
+    KATEGORIS ||--o{ BUKUS : mengelompokkan
+    BUKUS ||--o{ PEMINJAMANS : memiliki
+    PEMINJAMANS {
+        string kode_pinjam UK
+        bigint buku_id FK
+        string nim_peminjam
+        string nama_peminjam
+        date tanggal_pinjam
+        date tanggal_jatuh_tempo
+        date tanggal_kembali "nullable"
+        string status "dipinjam atau dikembalikan"
+    }
+```
+
+### Bukti pengujian
+
+Jalankan tes otomatis dengan `php artisan test`. Bukti visual pelaksanaan fitur:
+
+1. Peminjaman dan pengembalian berhasil: `docs/bukti-pinjam-kembali.png`
+   ![Pinjam dan kembali](docs/bukti-pinjam-kembali.png)
+2. Penolakan peminjaman saat stok 0: `docs/bukti-stok-nol.png`
+   ![Penolakan stok 0](docs/bukti-stok-nol.png)
+3. Cookie `del_last_user_email` dengan atribut HttpOnly di Browser DevTools: `docs/bukti-cookie-httponly.png`
+   ![Cookie HttpOnly](docs/bukti-cookie-httponly.png)
 
 ## Bukti audit query
 
 ![Bukti audit query dari laravel.log](docs/bukti-audit-query.png)
 
-Log lokal di atas diambil setelah membuka `/buku`. Terlihat satu query `bukus` dengan `limit 11` (10 data per halaman ditambah satu data untuk memeriksa halaman berikutnya) dan satu query eager loading `kategoris` dengan `where ... in (...)`. Query `sessions` juga dapat muncul karena konfigurasi session database; query itu bukan query katalog tambahan.
+Log lokal di atas adalah bukti audit katalog Week 5: satu query daftar `bukus` dengan `limit 11` (10 data per halaman ditambah satu data untuk memeriksa halaman berikutnya) dan satu query eager loading `kategoris`. Pada Week 6, katalog juga menjalankan query agregasi statistik dan query opsi dropdown kategori.
 
 ## Pengujian
 
@@ -91,7 +128,7 @@ Jalankan pengujian fitur:
 php artisan test
 ```
 
-Tes katalog mengaudit kueri yang berjalan dan memastikan hanya ada satu kueri untuk buku serta satu kueri eager load kategori. Saat aplikasi berjalan dengan `APP_ENV=local`, listener pada `AppServiceProvider` mencatat SQL dan waktu eksekusi ke `storage/logs/laravel.log`.
+Tes katalog mengaudit kueri katalog, eager loading kategori, dan agregasi peminjaman. Saat aplikasi berjalan dengan `APP_ENV=local`, listener pada `AppServiceProvider` mencatat SQL dan waktu eksekusi ke `storage/logs/laravel.log`.
 
 ## Catatan dependency
 

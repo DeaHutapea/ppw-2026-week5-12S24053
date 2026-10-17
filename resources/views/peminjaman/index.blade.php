@@ -34,14 +34,14 @@
                             <td>{{ $peminjaman->tanggal_pinjam->format('d-m-Y') }}</td>
                             <td>{{ $peminjaman->tanggal_jatuh_tempo->format('d-m-Y') }}</td>
                             <td>
-                                @if ($peminjaman->status === 'kembali')
-                                    <span class="badge rounded-pill bg-success-subtle text-success-emphasis">Kembali</span>
+                                @if ($peminjaman->status === 'dikembalikan')
+                                    <span class="badge rounded-pill bg-success-subtle text-success-emphasis">Dikembalikan</span>
                                 @else
                                     <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis">Dipinjam</span>
                                 @endif
                             </td>
                             <td class="text-end">
-                                @if ($peminjaman->status !== 'kembali')
+                                @if ($peminjaman->status !== 'dikembalikan')
                                     <form action="{{ route('peminjaman.kembali', $peminjaman) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-outline-success">Kembalikan</button>

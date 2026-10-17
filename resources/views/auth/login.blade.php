@@ -14,7 +14,7 @@
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input id="email" name="email" type="email" value="{{ old('email') }}" class="form-control @error('email') is-invalid @enderror" placeholder="staff@del.ac.id" required autofocus>
+                            <input id="email" name="email" type="email" value="{{ old('email', request()->cookie('del_last_user_email')) }}" class="form-control @error('email') is-invalid @enderror" placeholder="staff@del.ac.id" required autofocus>
                             @error('email')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror

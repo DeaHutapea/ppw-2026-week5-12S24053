@@ -4,8 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\Buku;
 use App\Models\Kategori;
+use App\Models\Peminjaman;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,9 +17,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory()->create([
-            'name' => 'Admin SIPUS',
-            'email' => 'admin@del.ac.id',
-            'password' => bcrypt('password123'),
+            'name' => 'Pustakawan SIPUS',
+            'email' => 'pustakawan@del.ac.id',
+            'password' => Hash::make('password123'),
         ]);
 
         $kategoris = collect([
@@ -28,8 +30,42 @@ class DatabaseSeeder extends Seeder
             ['kode_kategori' => 'KT-005', 'nama_kategori' => 'Referensi'],
         ])->map(fn (array $kategori): Kategori => Kategori::create($kategori));
 
-        $kategoris->each(function (Kategori $kategori): void {
-            Buku::factory()->count(4)->for($kategori)->create();
-        });
+        $bukus = $kategoris->flatMap(
+            fn (Kategori $kategori) => Buku::factory()->count(4)->for($kategori)->create()
+        );
+        $bukuTanpaStok = $bukus->get(0);
+        $bukuSatuStok = $bukus->get(1);
+
+        $bukuTanpaStok->update([
+            'isbn' => '9780000000000',
+            'judul' => 'Buku Uji Stok Nol',
+            'stok' => 0,
+        ]);
+        $bukuSatuStok->update([
+            'isbn' => '9780000000017',
+            'judul' => 'Buku Uji Stok Satu',
+            'stok' => 1,
+        ]);
+
+        Peminjaman::create([
+            'kode_pinjam' => 'PINJAM-SEED-0001',
+            'buku_id' => $bukuTanpaStok->id,
+            'nim_peminjam' => '12S24001',
+            'nama_peminjam' => 'Mahasiswa Peminjam Aktif',
+            'tanggal_pinjam' => now()->toDateString(),
+            'tanggal_jatuh_tempo' => now()->addDays(7)->toDateString(),
+            'status' => 'dipinjam',
+        ]);
+
+        Peminjaman::create([
+            'kode_pinjam' => 'PINJAM-SEED-0002',
+            'buku_id' => $bukuSatuStok->id,
+            'nim_peminjam' => '12S24002',
+            'nama_peminjam' => 'Mahasiswa Peminjam Selesai',
+            'tanggal_pinjam' => now()->subDays(14)->toDateString(),
+            'tanggal_jatuh_tempo' => now()->subDays(7)->toDateString(),
+            'tanggal_kembali' => now()->subDays(8)->toDateString(),
+            'status' => 'dikembalikan',
+        ]);
     }
 }

@@ -4,10 +4,12 @@ namespace Tests\Feature;
 
 use App\Models\Buku;
 use App\Models\Kategori;
+use App\Models\Peminjaman;
 use App\Models\User;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class SipusCrudTest extends TestCase
@@ -22,7 +24,7 @@ class SipusCrudTest extends TestCase
         $this->actingAs(User::factory()->create());
     }
 
-    public function test_book_catalog_eager_loads_categories_in_two_queries(): void
+    public function test_book_catalog_eager_loads_categories_and_runs_aggregate_queries(): void
     {
         $kategori = Kategori::factory()->create();
         Buku::factory()->count(3)->for($kategori)->create();
@@ -36,11 +38,15 @@ class SipusCrudTest extends TestCase
             ->assertOk()
             ->assertSee($kategori->nama_kategori);
 
-        $bookQueries = collect($queries)->filter(fn (string $sql): bool => str_contains($sql, 'from "bukus"'));
+        $bookQueries = collect($queries)
+            ->filter(fn (string $sql): bool => str_contains($sql, 'from "bukus"'));
+        $catalogQueries = $bookQueries->filter(fn (string $sql): bool => str_contains($sql, 'peminjamans_count'));
         $categoryQueries = collect($queries)->filter(fn (string $sql): bool => str_contains($sql, 'from "kategoris"'));
+        $categoryEagerLoads = $categoryQueries->filter(fn (string $sql): bool => str_contains($sql, ' where '));
 
-        $this->assertCount(1, $bookQueries);
-        $this->assertCount(1, $categoryQueries);
+        $this->assertCount(1, $catalogQueries);
+        $this->assertCount(2, $categoryQueries);
+        $this->assertCount(1, $categoryEagerLoads);
     }
 
     public function test_book_and_category_pages_render(): void
@@ -154,5 +160,27 @@ class SipusCrudTest extends TestCase
 
         $this->assertDatabaseCount('kategoris', 5);
         $this->assertDatabaseCount('bukus', 20);
+        $this->assertDatabaseHas('users', ['email' => 'pustakawan@del.ac.id']);
+        $this->assertTrue(Hash::check(
+            'password123',
+            User::query()->where('email', 'pustakawan@del.ac.id')->value('password')
+        ));
+        $this->assertDatabaseHas('bukus', ['stok' => 0]);
+        $this->assertDatabaseHas('bukus', ['stok' => 1]);
+        $this->assertDatabaseHas('bukus', ['isbn' => '9780000000000', 'judul' => 'Buku Uji Stok Nol', 'stok' => 0]);
+        $this->assertDatabaseHas('bukus', ['isbn' => '9780000000017', 'judul' => 'Buku Uji Stok Satu', 'stok' => 1]);
+        $this->assertDatabaseHas('peminjamans', ['status' => 'dipinjam']);
+        $this->assertDatabaseHas('peminjamans', ['status' => 'dikembalikan']);
+        $this->assertDatabaseCount('peminjamans', 2);
+        $this->assertDatabaseHas('peminjamans', [
+            'kode_pinjam' => 'PINJAM-SEED-0001',
+            'nim_peminjam' => '12S24001',
+            'status' => 'dipinjam',
+        ]);
+        $this->assertDatabaseHas('peminjamans', [
+            'kode_pinjam' => 'PINJAM-SEED-0002',
+            'nim_peminjam' => '12S24002',
+            'status' => 'dikembalikan',
+        ]);
     }
 }

@@ -26,6 +26,9 @@
                     @auth
                         <a class="nav-link {{ request()->routeIs('kategori.*') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
                         <a class="nav-link {{ request()->routeIs('peminjaman.*') ? 'active' : '' }}" href="{{ route('peminjaman.index') }}">Peminjaman</a>
+                        @if (session('login_timestamp'))
+                            <span class="navbar-text">Login sejak {{ session('login_timestamp') }}</span>
+                        @endif
                         <form action="{{ route('logout') }}" method="POST" class="d-flex">
                             @csrf
                             <button type="submit" class="nav-link border-0 bg-transparent">Keluar ({{ auth()->user()->name }})</button>

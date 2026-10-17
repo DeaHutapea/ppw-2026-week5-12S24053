@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\View\View;
 
 class LoginController extends Controller
@@ -24,8 +25,11 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+            $request->session()->put('login_timestamp', now()->format('d M Y, H:i:s').' WIB');
+            Cookie::queue('del_last_user_email', $request->email, 10080);
 
-            return redirect()->intended(route('buku.index'));
+            return redirect()->intended(route('buku.index'))
+                ->with('success', 'Sesi Anda telah aktif.');
         }
 
         return back()->withErrors([
@@ -40,6 +44,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('login')
+            ->with('success', 'Sesi server telah dihapus dengan aman.');
     }
 }

@@ -6,6 +6,7 @@ use App\Models\Buku;
 use App\Models\Kategori;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -15,10 +16,17 @@ class BukuController extends Controller
     {
         $validated = $request->validate([
             'q' => ['nullable', 'string', 'max:100'],
+            'kategori_id' => ['nullable', 'integer', 'exists:kategoris,id'],
         ]);
         $search = $validated['q'] ?? '';
+        $kategoriId = $validated['kategori_id'] ?? null;
+
+        if ($search !== '') {
+            $request->session()->put('last_book_search', $search);
+        }
 
         $bukus = Buku::with('kategori')
+            ->withCount('peminjamans')
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($query) use ($search): void {
                     $query->where('judul', 'like', "%{$search}%")
@@ -26,11 +34,22 @@ class BukuController extends Controller
                         ->orWhere('isbn', 'like', "%{$search}%");
                 });
             })
+            ->when($kategoriId !== null, fn ($query) => $query->where('kategori_id', $kategoriId))
             ->latest()
-            ->simplePaginate(10)
+            ->paginate(10)
             ->withQueryString();
 
-        return view('buku.index', compact('bukus'));
+        $kategoris = Kategori::query()->orderBy('nama_kategori')->get();
+        $stats = [
+            'total_judul' => DB::table('bukus')->count(),
+            'total_stok' => (int) DB::table('bukus')->sum('stok'),
+            'total_dipinjam' => DB::table('peminjamans')->where('status', 'dipinjam')->count(),
+            'total_dikembalikan' => DB::table('peminjamans')->where('status', 'dikembalikan')->count(),
+        ];
+
+        $lastSearch = session('last_book_search');
+
+        return view('buku.index', compact('bukus', 'stats', 'kategoris', 'lastSearch'));
     }
 
     public function create(): View
