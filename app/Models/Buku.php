@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Database\Factories\BukuFactory;
+use Database\Factories\categoryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
