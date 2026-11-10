@@ -1,0 +1,9 @@
+$kind: http-request
+name: GET Pencarian Buku (?search=...)
+url: "{{base_url}}/bukus?search=Clean"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  search: Clean
+order: 2000

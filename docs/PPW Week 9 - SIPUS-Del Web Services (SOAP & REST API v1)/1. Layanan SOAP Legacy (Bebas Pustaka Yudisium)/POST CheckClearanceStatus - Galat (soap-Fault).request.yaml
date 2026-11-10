@@ -1,0 +1,20 @@
+$kind: http-request
+name: POST CheckClearanceStatus - Galat (soap:Fault)
+description: Menguji pengembalian soap:Fault 500 saat nilai nim_peminjam dikirim kosong.
+url: "{{soap_url}}/sipus"
+method: POST
+headers:
+  Content-Type: text/xml; charset=utf-8
+body:
+  type: xml
+  content: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+    <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+                   xmlns:m="http://sipus.del.ac.id/soap/clearance">
+        <soap:Body>
+            <m:CheckClearanceStatusRequest>
+                <m:nim_peminjam></m:nim_peminjam>
+            </m:CheckClearanceStatusRequest>
+        </soap:Body>
+    </soap:Envelope>
+order: 4000

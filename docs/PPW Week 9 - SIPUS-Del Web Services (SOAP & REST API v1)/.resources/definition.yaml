@@ -1,0 +1,8 @@
+$kind: collection
+description: Koleksi Postman resmi untuk pengujian lengkap SOAP clearance dan RESTful Web API v1 Sistem Informasi Perpustakaan IT Del (SIPUS-Del). Mematuhi Richardson Maturity Model Level 3 (HATEOAS), RFC 7807 Problem Details, semantik HTTP Verbs, transaksi ACID, dan Sanctum Bearer Token.
+variables:
+  base_url: http://localhost:8000/api/v1
+  soap_url: http://localhost:8000/soap
+  token: ""
+  created_buku_id: "1"
+  created_loan_id: "1"

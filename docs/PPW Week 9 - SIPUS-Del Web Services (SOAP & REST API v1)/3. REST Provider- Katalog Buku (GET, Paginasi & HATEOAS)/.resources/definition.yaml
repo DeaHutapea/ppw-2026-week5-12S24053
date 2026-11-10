@@ -1,0 +1,3 @@
+$kind: collection
+name: "3. REST Provider: Katalog Buku (GET, Paginasi & HATEOAS)"
+order: 3000

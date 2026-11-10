@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{base_url}}/bukus"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+        "isbn": "9781234567890",
+        "judul": "Buku Ilegal Tanpa Token",
+        "penulis": "Anonymous",
+        "penerbit": "Dark Web",
+        "tahun_terbit": 2026,
+        "kategori_id": 1,
+        "stok": 1
+    }
+order: 2000

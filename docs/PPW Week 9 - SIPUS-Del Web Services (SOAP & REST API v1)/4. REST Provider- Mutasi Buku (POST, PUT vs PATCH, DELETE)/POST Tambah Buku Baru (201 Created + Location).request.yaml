@@ -1,0 +1,32 @@
+$kind: http-request
+url: "{{base_url}}/bukus"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+        "isbn": "9780132350884",
+        "judul": "Clean Code: A Handbook of Agile Software Craftsmanship",
+        "penulis": "Robert C. Martin",
+        "penerbit": "Prentice Hall",
+        "tahun_terbit": 2008,
+        "kategori_id": 1,
+        "stok": 5,
+        "sinopsis": "Buku fundamental arsitektur dan praktik koding bersih bagi insinyur perangkat lunak modern."
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      var json = pm.response.json();
+      if (json && json.data && json.data.id) {
+          pm.collectionVariables.set('created_buku_id', json.data.id);
+      }
+    language: text/javascript
+order: 1000

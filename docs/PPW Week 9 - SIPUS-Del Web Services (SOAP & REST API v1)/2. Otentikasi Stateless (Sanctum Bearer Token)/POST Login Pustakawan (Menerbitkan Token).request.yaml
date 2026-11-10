@@ -1,0 +1,25 @@
+$kind: http-request
+description: Login staf perpustakaan. Script otomatis menyimpan access_token ke variabel {{token}}.
+url: "{{base_url}}/auth/login"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+        "email": "pustakawan@del.ac.id",
+        "password": "password123",
+        "device_name": "postman-workstation"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      var jsonData = pm.response.json();
+      if (jsonData && jsonData.data && jsonData.data.access_token) {
+          pm.collectionVariables.set('token', jsonData.data.access_token);
+          console.log('Sanctum Bearer Token tersimpan:', jsonData.data.access_token);
+      }
+    language: text/javascript
+order: 1000

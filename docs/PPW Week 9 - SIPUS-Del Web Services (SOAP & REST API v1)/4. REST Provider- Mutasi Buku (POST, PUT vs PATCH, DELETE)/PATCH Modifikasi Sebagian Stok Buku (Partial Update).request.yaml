@@ -1,0 +1,18 @@
+$kind: http-request
+description: Pada semantik PATCH, hanya kolom yang dikirim ('stok') yang diperbarui. Kolom lain tetap utuh.
+url: "{{base_url}}/bukus/{{created_buku_id}}"
+method: PATCH
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+        "stok": 15
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 5000

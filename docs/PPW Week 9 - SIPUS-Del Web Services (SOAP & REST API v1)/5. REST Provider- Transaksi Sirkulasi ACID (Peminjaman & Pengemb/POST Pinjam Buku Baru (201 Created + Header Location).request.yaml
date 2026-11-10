@@ -1,0 +1,29 @@
+$kind: http-request
+description: "Transaksi ACID: DB::transaction + lockForUpdate memotong stok buku -1 dan mencatat baris peminjaman."
+url: "{{base_url}}/peminjamans"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+        "buku_id": 2,
+        "nim_peminjam": "12S24053",
+        "nama_peminjam": "Dea Hutapea",
+        "durasi_hari": 7
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      var json = pm.response.json();
+      if (json && json.data && json.data.id) {
+          pm.collectionVariables.set('created_loan_id', json.data.id);
+      }
+    language: text/javascript
+order: 2000

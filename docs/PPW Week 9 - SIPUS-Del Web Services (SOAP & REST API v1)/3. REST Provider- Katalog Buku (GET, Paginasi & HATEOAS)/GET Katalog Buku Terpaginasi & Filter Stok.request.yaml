@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{base_url}}/bukus?per_page=5&sort=stok&dir=desc&tersedia=1"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  per_page: "5"
+  sort: stok
+  dir: desc
+  tersedia: "1"
+order: 1000

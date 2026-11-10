@@ -1,0 +1,11 @@
+$kind: http-request
+description: Menghapus buku tanpa peminjaman berhasil mengembalikan 204 No Content tanpa response body.
+url: "{{base_url}}/bukus/{{created_buku_id}}"
+method: DELETE
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 7000

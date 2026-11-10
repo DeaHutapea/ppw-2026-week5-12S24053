@@ -1,0 +1,8 @@
+$kind: http-request
+name: GET Kontrak WSDL Layanan (/soap/sipus.wsdl)
+description: Mengambil dokumen kontrak resmi WSDL operasi CheckClearanceStatus.
+url: "{{soap_url}}/sipus.wsdl"
+method: GET
+headers:
+  Accept: text/xml
+order: 1000

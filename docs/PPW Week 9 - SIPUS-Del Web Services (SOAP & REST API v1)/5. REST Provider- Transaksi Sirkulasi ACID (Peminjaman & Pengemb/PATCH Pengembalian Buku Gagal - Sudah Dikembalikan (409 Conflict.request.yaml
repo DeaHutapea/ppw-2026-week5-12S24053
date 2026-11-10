@@ -1,0 +1,12 @@
+$kind: http-request
+name: PATCH Pengembalian Buku Gagal - Sudah Dikembalikan (409 Conflict)
+description: "Mencegah duplikasi pengembalian stok: peminjaman yang sudah dikembalikan ditolak 409 Conflict."
+url: "{{base_url}}/peminjamans/{{created_loan_id}}/kembalikan"
+method: PATCH
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 5000

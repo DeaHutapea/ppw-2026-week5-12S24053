@@ -1,0 +1,24 @@
+$kind: http-request
+description: Pada semantik PUT, seluruh atribut wajib dikirim. Sinopsis yang tidak dikirim direset menjadi null.
+url: "{{base_url}}/bukus/{{created_buku_id}}"
+method: PUT
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+        "isbn": "9780132350884",
+        "judul": "Clean Code: Agile Software Craftsmanship (Revised)",
+        "penulis": "Robert C. Martin (Uncle Bob)",
+        "penerbit": "Prentice Hall Publishing",
+        "tahun_terbit": 2009,
+        "kategori_id": 1,
+        "stok": 6
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4000

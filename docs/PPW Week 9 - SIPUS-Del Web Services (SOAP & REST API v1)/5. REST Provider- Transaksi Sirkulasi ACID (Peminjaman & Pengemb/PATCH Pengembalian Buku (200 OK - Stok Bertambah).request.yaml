@@ -1,0 +1,11 @@
+$kind: http-request
+description: "Mengembalikan buku via transaksi ACID: status menjadi 'dikembalikan', tanggal_kembali diisi, dan stok +1."
+url: "{{base_url}}/peminjamans/{{created_loan_id}}/kembalikan"
+method: PATCH
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4000

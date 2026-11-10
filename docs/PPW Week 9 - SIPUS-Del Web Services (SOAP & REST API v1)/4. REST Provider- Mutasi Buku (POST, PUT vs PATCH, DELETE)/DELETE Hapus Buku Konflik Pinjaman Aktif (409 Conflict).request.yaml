@@ -1,0 +1,11 @@
+$kind: http-request
+description: Menghapus buku yang sedang memiliki transaksi peminjaman aktif ditolak dengan HTTP 409 Conflict.
+url: "{{base_url}}/bukus/1"
+method: DELETE
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 6000

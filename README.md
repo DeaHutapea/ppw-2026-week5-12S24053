@@ -129,7 +129,8 @@ Berikut adalah 7 bukti pengujian menyeluruh yang mencakup pengujian SOAP XML, ot
 ### (a) Bukti Uji SOAP XML & SOAP Fault (CheckClearanceStatus)
 Pengecekan kelayakan bebas pustaka mahasiswa yudisium. Saat mahasiswa memiliki 0 buku dipinjam, server merespons `200 OK` dengan `<m:is_cleared>true</m:is_cleared>`. Saat tag `<nim_peminjam>` kosong atau XML cacat, server mengembalikan blok `<soap:Fault>` dengan status `500 Server Error`.
 
-![Bukti Uji SOAP Clearance](docs/bukti-01-soap-clearance.png)
+![Bukti Uji SOAP Clearance Normal](docs/bukti-01-soap-clearance.png)
+![Bukti Uji SOAP Fault](docs/bukti-01.1-soap-clearance.png)
 
 ---
 
@@ -158,21 +159,24 @@ Penambahan buku baru pada `POST /api/v1/bukus`. Respon sukses mengembalikan stat
 - **PUT (`Full Replacement`)**: Klien wajib mengirimkan representasi utuh. Kolom nullable yang dihilangkan dari request body (`sinopsis`) otomatis direset menjadi `null` di basis data.
 - **PATCH (`Partial Update`)**: Klien cukup mengirimkan atribut yang ingin diubah (contoh: `{"stok": 20}`). Atribut lama lainnya tetap aman dan tidak berubah.
 
-![Bukti Perbedaan PUT vs PATCH](docs/bukti-05-put-vs-patch.png)
+![Bukti Uji PATCH Partial Update](docs/bukti-05.1-put-vs-patch.png)
+![Bukti Uji PUT Full Replacement](docs/bukti-05.2-put-vs-patchbukti-05-put-vs-patch.png)
 
 ---
 
 ### (f) Bukti Uji Transaksi Sirkulasi ACID, Penolakan Stok Habis (422) & Duplikasi (409)
 Transaksi peminjaman dan pengembalian dibungkus di dalam `DB::transaction()` dengan pessimistic locking `lockForUpdate()`. Jika stok buku habis (0), transaksi dibatalkan dengan status `422 Unprocessable Content`. Jika NIM yang sama meminjam buku yang sama sebelum dikembalikan, server menolak dengan status `409 Conflict`. Pengembalian buku menambah stok (+1), dan pengembalian ulang kedua kali ditolak dengan status `409 Conflict`.
 
-![Bukti Sirkulasi ACID Conflict](docs/bukti-06-peminjaman-acid-conflict.png)
+![Bukti Peminjaman Sukses](docs/bukti-06.1-peminjaman-acid-conflict.png)
+![Bukti Penolakan Stok Habis Konflik](docs/bukti-06.2-peminjaman-acid-conflict.png)
 
 ---
 
 ### (g) Bukti Uji Konsumsi GitHub REST API (Personal Access Token Disensor)
 Eksplorasi peran sebagai REST Service Consumer. Menginspeksi raw HTTP response headers pada GitHub API (`x-ratelimit-limit: 60`, `Cache-Control: public, max-age=60`). Mutasi bio profil menggunakan `PATCH /user` dengan Personal Access Token (PAT) tersensor, di mana `x-ratelimit-limit` melonjak menjadi 5.000 request/jam.
 
-![Bukti Latihan GitHub REST API](docs/bukti-07-github-rest-api.png)
+![Bukti GET Octocat Header Ratelimit](docs/bukti-07.1-github-rest-api.png)
+![Bukti PATCH User Bio](docs/bukti-07.2-github-rest-api.png)
 
 ---
 

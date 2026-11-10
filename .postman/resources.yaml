@@ -2,8 +2,12 @@
 workspace:
   id: 65855baf-ed28-4ccf-804a-77f9bc1c0d70
 
-# All resources in the `postman/` folder are automatically registered in Local View.
-# Point to additional files outside the `postman/` folder to register them individually. Example:
-#localResources:
-#  collections:
-#    - ../tests/E2E Test Collection/
+localResources:
+  collections:
+    - ../docs/PPW Week 9 - SIPUS-Del Web Services (SOAP & REST API v1)
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../docs/PPW Week 9 - SIPUS-Del Web Services (SOAP & REST API v1): c85d6812-78d1-443b-8521-e0c19b6a9a01
