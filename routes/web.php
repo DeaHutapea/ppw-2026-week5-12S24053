@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\Soap\LibrarySoapController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/buku');
@@ -25,3 +26,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/buku/{buku}', [BukuController::class, 'show'])->name('buku.show');
+
+// =========================================================================
+// SOAP Web Service (Simulasi Integrasi Sistem Bebas Pustaka Yudisium)
+// =========================================================================
+Route::get('/soap/sipus.wsdl', [LibrarySoapController::class, 'wsdl'])->name('soap.sipus.wsdl');
+Route::post('/soap/sipus', [LibrarySoapController::class, 'handle'])->name('soap.sipus.handle');
+
